@@ -9,6 +9,6 @@ read -p "Host: " host
 read -p "User: " user
 echo -e "\nPackaging process has started."
 
-rsync -avz $(pwd) $user@$host:/c/Users/salla/Downloads
+rsync -avz $(pwd) $user@$host:/home/salla/testing
 
 echo -e "\nTransfer completed"
