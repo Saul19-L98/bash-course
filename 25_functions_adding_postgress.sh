@@ -11,33 +11,67 @@ echo "3. Create backup"
 echo "4. Backup Restart"
 echo "5. Exit"
 
-install_postgress () {	
-	echo -e "\nInstall Postgress"
+# install_postgress () {	
+# 	echo -e "\nInstall Postgress"
+# 	verifyInstall=$(which psql)
+# 	if [ $? -eq 0 ]; then
+# 		echo -e "\n Postgress is already installed in your machine."
+# 	else
+# 		read -s -p "Enter sudo password: " password
+# 		read -s -p "Enter password to use postgress: " pwdPostgress
+# 		echo "$password" | sudo -S apt update
+# 		echo "$password" | sudo -S apt-get -y install postgresql postgresql-contrib
+# 		sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD '${pwdPostgress}';"
+# 		echo "$password" | sudo -S systemctl enable postgresql.service
+# 		echo "$password" | sudo -S systemctl start postgresql.service
+# 	fi
+# 	read -n 1 -s -r -p "Press {ENTER} to continue..."
+	
+# }
+
+# uninstall_postgress() {	
+# 	read -s -p "Enter password with sudo:" password
+# 	echo -e "\n"
+# 	echo "$password" | sudo -S systemctl stop postgresql.service
+# 	echo "$password" | sudo -S apt-get -y --purge remove postgresql\*
+# 	echo "$password" | sudo -S rm -r /etc/postgresql
+# 	echo "$password" | sudo -S rm -r /etc/postgresql-common
+# 	echo "$password" | sudo -S rm -r /var/lib/postgresql
+# 	echo "$password" | sudo -S userdel -r postgres
+# 	echo "$password" | sudo -S groupdel postgresql
+# 	read -n 1 -s -r -p "Press {ENTER} to continue..."
+# }
+install_postgres() {
+	echo -e "\nInstalling Postgres..."
 	verifyInstall=$(which psql)
 	if [ $? -eq 0 ]; then
-		echo -e "\n Postgress is already installed in your machine."
+		echo -e "\nPostgres is already installed on your machine."
 	else
 		read -s -p "Enter sudo password: " password
-		read -s -p "Enter password to use postgress: " pwdPostgress
+		read -s -p "Enter password to use for Postgres: " pwdPostgres
 		echo "$password" | sudo -S apt update
+		if [ $? -ne 0 ]; then
+			echo -e "\nIncorrect sudo password. Please try again."
+			return
+		fi
 		echo "$password" | sudo -S apt-get -y install postgresql postgresql-contrib
-		sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD '${pwdPostgress}';"
+		sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD '${pwdPostgres}';"
 		echo "$password" | sudo -S systemctl enable postgresql.service
 		echo "$password" | sudo -S systemctl start postgresql.service
+		echo -e "\nPostgres installation completed."
 	fi
 	read -n 1 -s -r -p "Press {ENTER} to continue..."
 }
 
-uninstall_postgress() {	
-	read -s -p "Enter password with sudo:" password
+uninstall_postgres() {
+	read -s -p "Enter sudo password: " password
 	echo -e "\n"
 	echo "$password" | sudo -S systemctl stop postgresql.service
 	echo "$password" | sudo -S apt-get -y --purge remove postgresql\*
-	echo "$password" | sudo -S rm -r /etc/postgresql
-	echo "$password" | sudo -S rm -r /etc/postgresql-common
-	echo "$password" | sudo -S rm -r /var/lib/postgresql
+	echo "$password" | sudo -S rm -r /etc/postgresql /etc/postgresql-common /var/lib/postgresql
 	echo "$password" | sudo -S userdel -r postgres
 	echo "$password" | sudo -S groupdel postgresql
+	echo -e "\nPostgres uninstalled successfully."
 	read -n 1 -s -r -p "Press {ENTER} to continue..."
 }
 
